@@ -1,0 +1,47 @@
+{
+  "name": "ccusage-menubar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sters/ccusage-menubar.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sters/ccusage-menubar/issues"
+  },
+  "homepage": "https://github.com/sters/ccusage-menubar#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@types/electron": "^1.4.38",
+    "@types/node": "^24.0.13",
+    "@typescript-eslint/eslint-plugin": "^8.36.0",
+    "@typescript-eslint/parser": "^8.36.0",
+    "@vitest/ui": "^3.2.4",
+    "electron": "^37.2.1",
+    "eslint": "^9.30.1",
+    "globals": "^16.3.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.36.0",
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "ccusage": "^15.3.1",
+    "menubar": "^9.5.1"
+  }
+}
