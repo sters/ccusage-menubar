@@ -86,7 +86,7 @@ export class UsageService {
       };
 
       return usageData;
-    } catch (error) {
+    } catch {
       // Error fetching usage data
       // Return empty data on error
       return {

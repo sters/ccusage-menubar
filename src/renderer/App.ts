@@ -42,7 +42,7 @@ class App {
     try {
       this.usage = await window.electronAPI.getUsageData()
       this.render()
-    } catch (error) {
+    } catch {
       // Failed to fetch usage data
       this.renderError()
     }
@@ -134,7 +134,7 @@ class App {
       try {
         this.usage = await window.electronAPI.getUsageData()
         this.render()
-      } catch (error) {
+      } catch {
         // Failed to refresh data
       }
     })

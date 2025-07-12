@@ -1,7 +1,6 @@
 import { app, ipcMain } from 'electron'
 import { menubar } from 'menubar'
 import path from 'node:path'
-import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { usageService } from './services/usageService.js'
 
@@ -17,7 +16,7 @@ app.whenReady().then(() => {
   const assetsPath = path.join(__dirname, '../assets')
   
   // Use template icon for macOS
-  const iconName = 'icon.png'
+  const iconName = 'iconTemplate.png'
   const iconPath = path.join(assetsPath, iconName)
   
   
@@ -76,31 +75,26 @@ app.whenReady().then(() => {
 
 // Function to fetch and emit usage data updates
 async function fetchAndEmitUsageData() {
-  try {
-    const usageData = await usageService.fetchUsageData()
-    
-    const formattedData = {
-      tokens: {
-        input: usageData.today.inputTokens,
-        output: usageData.today.outputTokens,
-        cacheCreation: usageData.today.cacheCreationTokens || 0,
-        cacheRead: usageData.today.cacheReadTokens || 0
-      },
-      estimatedCost: usageData.today.totalCost,
-      modelsUsed: usageData.today.modelsUsed,
-      daily: usageData.daily
-    }
-    
-    // Emit the update to the renderer if window exists
-    if (mb.window) {
-      mb.window.webContents.send('usage-update', formattedData)
-    }
-    
-    return formattedData
-  } catch (error) {
-    // Error fetching usage data
-    throw error
+  const usageData = await usageService.fetchUsageData()
+  
+  const formattedData = {
+    tokens: {
+      input: usageData.today.inputTokens,
+      output: usageData.today.outputTokens,
+      cacheCreation: usageData.today.cacheCreationTokens || 0,
+      cacheRead: usageData.today.cacheReadTokens || 0
+    },
+    estimatedCost: usageData.today.totalCost,
+    modelsUsed: usageData.today.modelsUsed,
+    daily: usageData.daily
   }
+  
+  // Emit the update to the renderer if window exists
+  if (mb.window) {
+    mb.window.webContents.send('usage-update', formattedData)
+  }
+  
+  return formattedData
 }
 
 // Start background refresh when app is ready
