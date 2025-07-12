@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
 
     - name: Use Node.js
       uses: actions/setup-node@v4
@@ -30,10 +32,6 @@ jobs:
 
     - name: Build check
       run: npm run build
-
-    - name: Prepare dist files
-      run: |
-        sed -i '/dist/d' .gitignore
 
     - name: Create dist branch
       uses: planetscale/ghcommit-action@v0.2.15
