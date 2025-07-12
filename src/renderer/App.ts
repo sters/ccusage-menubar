@@ -67,10 +67,15 @@ class App {
     this.container.innerHTML = `
       <div class="app">
         <header class="app-header">
-          <h1>Claude Code Usage</h1>
+          <h1>Today's Claude Code Usage</h1>
         </header>
         
         <main class="usage-stats">
+          <div class="stat-card">
+            <h2>Estimated Cost</h2>
+            <div class="value large">$${this.usage.estimatedCost.toFixed(2)}</div>
+          </div>
+
           <div class="stat-card">
             <h2>Tokens</h2>
             <div class="token-stats">
@@ -95,11 +100,6 @@ class App {
               </div>
               ` : ''}
             </div>
-          </div>
-
-          <div class="stat-card">
-            <h2>Estimated Cost</h2>
-            <div class="value large">$${this.usage.estimatedCost.toFixed(2)}</div>
           </div>
 
           ${this.usage.modelsUsed && this.usage.modelsUsed.length > 0 ? `

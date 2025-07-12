@@ -58,11 +58,8 @@ export class UsageService {
         order: 'asc'
       }) as ExtendedDailyUsage[];
 
-
       // Find today's data (date format is YYYY-MM-DD)
-      const todayStr = today.toISOString().split('T')[0];
-      const todayData = dailyData.find((d) => d.date === todayStr);
-      
+      const todayData = dailyData.pop();
 
       // Format the data
       const usageData: UsageData = {

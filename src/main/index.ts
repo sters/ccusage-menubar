@@ -34,8 +34,7 @@ app.whenReady().then(() => {
         contextIsolation: true,
         preload: path.join(__dirname, 'preload.js')
       },
-      // Keep window open when clicking outside
-      alwaysOnTop: true,
+      alwaysOnTop: false,
       show: false,
       skipTaskbar: true,
       hiddenInMissionControl: true
@@ -66,9 +65,9 @@ app.whenReady().then(() => {
       mb.window?.webContents.openDevTools({ mode: 'detach' })
     }
     
-    // Override blur behavior to prevent hiding
+    // Hide window when it loses focus
     mb.window?.on('blur', () => {
-      // Do nothing - keep window open
+      mb.hideWindow()
     })
   })
 })
