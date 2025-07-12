@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "NODE_ENV=development concurrently -n \"VITE,ELECTRON\" -c \"yellow,cyan\" \"npm run dev:renderer\" \"npm run dev:electron\"",
     "dev:renderer": "vite",
-    "dev:electron": "npm run build:main && npm run copy:assets && electron . --inspect",
-    "build": "npm run build:main && npm run build:renderer && npm run copy:assets",
+    "dev:electron": "npm run build:main && npm run build:preload && npm run copy:assets && electron . --inspect",
+    "build": "npm run build:main && npm run build:preload && npm run build:renderer && npm run copy:assets",
     "build:main": "tsc -p tsconfig.main.json",
+    "build:preload": "tsc -p tsconfig.preload.json",
     "build:renderer": "vite build",
     "copy:assets": "mkdir -p dist/assets && cp -r assets/* dist/assets/",
     "start": "electron .",
@@ -26,7 +27,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/sters/ccusage-menubar/issues"
   },

@@ -2,10 +2,20 @@ interface UsageData {
   tokens: {
     input: number
     output: number
-    total: number
+    cacheCreation?: number
+    cacheRead?: number
   }
-  requests: number
   estimatedCost: number
+  modelsUsed?: string[]
+  daily?: Array<{
+    date: string
+    inputTokens: number
+    outputTokens: number
+    cacheCreationTokens?: number
+    cacheReadTokens?: number
+    totalCost: number
+    modelsUsed: string[]
+  }>
 }
 
 declare global {
@@ -72,22 +82,34 @@ class App {
                 <span class="label">Output:</span>
                 <span class="value">${this.usage.tokens.output.toLocaleString()}</span>
               </div>
-              <div class="stat-item total">
-                <span class="label">Total:</span>
-                <span class="value">${this.usage.tokens.total.toLocaleString()}</span>
+              ${this.usage.tokens.cacheCreation ? `
+              <div class="stat-item">
+                <span class="label">Cache Creation:</span>
+                <span class="value">${this.usage.tokens.cacheCreation.toLocaleString()}</span>
               </div>
+              ` : ''}
+              ${this.usage.tokens.cacheRead ? `
+              <div class="stat-item">
+                <span class="label">Cache Read:</span>
+                <span class="value">${this.usage.tokens.cacheRead.toLocaleString()}</span>
+              </div>
+              ` : ''}
             </div>
-          </div>
-
-          <div class="stat-card">
-            <h2>Requests</h2>
-            <div class="value large">${this.usage.requests}</div>
           </div>
 
           <div class="stat-card">
             <h2>Estimated Cost</h2>
             <div class="value large">$${this.usage.estimatedCost.toFixed(2)}</div>
           </div>
+
+          ${this.usage.modelsUsed && this.usage.modelsUsed.length > 0 ? `
+            <div class="stat-card">
+              <h2>Models Used</h2>
+              <div class="models-list">
+                ${this.usage.modelsUsed.map(model => `<span class="model-tag">${model}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
         </main>
         
         <footer class="app-footer">

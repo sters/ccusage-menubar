@@ -3,7 +3,7 @@
 A menubar application that displays Claude Code usage information using the `ccusage` npm package and `menubar` for Electron integration.
 
 ## Phase 1: Foundation & Setup
-- [ ] **Set up Electron app with menubar**
+- [x] **Set up Electron app with menubar**
   - Configure Electron main process
   - Integrate menubar package
   - Set up TypeScript for Electron
@@ -36,13 +36,13 @@ A menubar application that displays Claude Code usage information using the `ccu
   - Real-time usage updates
 
 ## Phase 3: UI/UX Implementation
-- [ ] **Design menubar icon**
+- [x] **Design menubar icon** (Basic implementation)
   - Show usage indicator (tokens/requests)
   - Color coding for usage levels
   - Support for light/dark themes
   - Loading state indicator
 
-- [ ] **Implement dropdown menu**
+- [x] **Implement dropdown menu** (Mocked data)
   - Current session token usage
   - Today's usage statistics
   - Model breakdown (Claude 3.5, etc.)

@@ -141,6 +141,22 @@ button {
   background-color: #e0e0e0;
 }
 
+.models-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.model-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   body {
@@ -182,5 +198,10 @@ button {
 
   .settings-btn:hover {
     background-color: #4e4e4e;
+  }
+
+  .model-tag {
+    background-color: #0d47a1;
+    color: #e3f2fd;
   }
 }

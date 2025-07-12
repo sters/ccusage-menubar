@@ -1,7 +1,12 @@
 import { app, ipcMain } from 'electron'
 import { menubar } from 'menubar'
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { usageService } from './services/usageService.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 let mb: ReturnType<typeof menubar>
 
@@ -10,7 +15,7 @@ app.whenReady().then(() => {
   const assetsPath = path.join(__dirname, '../assets')
   
   // Use template icon for macOS
-  const iconName = process.platform === 'darwin' ? 'iconTemplate.png' : 'icon.png'
+  const iconName = 'icon.png'
   const iconPath = path.join(assetsPath, iconName)
   
   console.log('Icon path:', iconPath)
@@ -30,13 +35,17 @@ app.whenReady().then(() => {
         contextIsolation: true,
         preload: path.join(__dirname, 'preload.js')
       },
-      // Hide window on blur
-      alwaysOnTop: false,
+      // Keep window open when clicking outside
+      alwaysOnTop: true,
       show: false,
-      skipTaskbar: true
+      skipTaskbar: true,
+      hiddenInMissionControl: true
     },
     // For macOS, we need to specify that this should show in dock
     showDockIcon: false,
+    // Disable auto-hide when window loses focus
+    showOnAllWorkspaces: false,
+    preloadWindow: true
   })
 
   mb.on('ready', () => {
@@ -53,27 +62,31 @@ app.whenReady().then(() => {
   })
 
   mb.on('after-create-window', () => {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' && process.env.OPEN_DEVTOOLS === 'true') {
       mb.window?.webContents.openDevTools({ mode: 'detach' })
     }
-  })
-  
-  mb.on('after-hide', () => {
-    // Ensure window is properly hidden
-    mb.app.hide()
+    
+    // Override blur behavior to prevent hiding
+    mb.window?.on('blur', () => {
+      // Do nothing - keep window open
+    })
   })
 })
 
 ipcMain.handle('get-usage-data', async () => {
-  // TODO: Implement ccusage integration
+  const usageData = await usageService.fetchUsageData()
+  
+  // Transform the data to match the expected format
   return {
     tokens: {
-      input: 1234,
-      output: 5678,
-      total: 6912
+      input: usageData.today.inputTokens,
+      output: usageData.today.outputTokens,
+      cacheCreation: usageData.today.cacheCreationTokens || 0,
+      cacheRead: usageData.today.cacheReadTokens || 0
     },
-    requests: 42,
-    estimatedCost: 1.23
+    estimatedCost: usageData.today.totalCost,
+    modelsUsed: usageData.today.modelsUsed,
+    daily: usageData.daily
   }
 })
 
