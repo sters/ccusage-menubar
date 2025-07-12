@@ -23,13 +23,7 @@ jobs:
       run: npm ci
 
     - name: Run linter
-      run: npm run lint
-
-    - name: Run type check
-      run: npm run typecheck
-
-    - name: Run tests
-      run: npm test
+      run: npm run ci
 
     - name: Run test coverage
       run: npm run test:coverage

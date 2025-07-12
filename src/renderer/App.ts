@@ -23,6 +23,7 @@ declare global {
     electronAPI: {
       getUsageData: () => Promise<UsageData>
       onUsageUpdate: (callback: (data: UsageData) => void) => void
+      quit: () => Promise<void>
     }
   }
 }
@@ -42,8 +43,8 @@ class App {
     try {
       this.usage = await window.electronAPI.getUsageData()
       this.render()
-    } catch {
-      // Failed to fetch usage data
+    } catch (error) {
+      console.error('Failed to fetch usage data:', error)
       this.renderError()
     }
 
@@ -114,7 +115,7 @@ class App {
         
         <footer class="app-footer">
           <button class="refresh-btn" id="refresh-btn">Refresh</button>
-          <button class="settings-btn" id="settings-btn">Settings</button>
+          <button class="quit-btn" id="quit-btn">Quit</button>
         </footer>
       </div>
     `
@@ -128,20 +129,19 @@ class App {
 
   private attachEventListeners() {
     const refreshBtn = document.getElementById('refresh-btn')
-    const settingsBtn = document.getElementById('settings-btn')
+    const quitBtn = document.getElementById('quit-btn')
 
     refreshBtn?.addEventListener('click', async () => {
       try {
         this.usage = await window.electronAPI.getUsageData()
         this.render()
-      } catch {
-        // Failed to refresh data
+      } catch (error) {
+        console.error('Failed to refresh data:', error)
       }
     })
 
-    settingsBtn?.addEventListener('click', () => {
-      // Settings clicked
-      // TODO: Implement settings window
+    quitBtn?.addEventListener('click', () => {
+      window.electronAPI.quit()
     })
   }
 }

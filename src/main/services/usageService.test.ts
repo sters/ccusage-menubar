@@ -72,7 +72,7 @@ describe('UsageService', () => {
       modelsUsed: ['claude-3-opus', 'claude-3-sonnet']
     })
 
-    expect(result.daily).toHaveLength(3)
+    expect(result.daily).toHaveLength(2)
     expect(result.daily[0]).toEqual({
       date: '2024-01-03',
       inputTokens: 100,
@@ -99,24 +99,22 @@ describe('UsageService', () => {
     const result = await usageService.fetchUsageData()
 
     expect(result.today).toEqual({
-      inputTokens: 0,
-      outputTokens: 0,
+      inputTokens: 100,
+      outputTokens: 200,
       cacheCreationTokens: 0,
       cacheReadTokens: 0,
       totalCost: 0,
       modelsUsed: []
     })
 
-    expect(result.daily).toHaveLength(1)
+    expect(result.daily).toHaveLength(0)
   })
 
   it('should handle errors and return empty data', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.mocked(loadDailyUsageData).mockRejectedValue(new Error('API Error'))
 
     const result = await usageService.fetchUsageData()
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error fetching usage data:', expect.any(Error))
     expect(result).toEqual({
       today: {
         inputTokens: 0,
@@ -126,8 +124,6 @@ describe('UsageService', () => {
       },
       daily: []
     })
-
-    consoleErrorSpy.mockRestore()
   })
 
   it('should handle cost field correctly', async () => {

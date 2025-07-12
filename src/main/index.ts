@@ -52,8 +52,6 @@ app.whenReady().then(() => {
   })
   
   mb.on('show', () => {
-    // Refresh data when window is shown
-    fetchAndEmitUsageData().catch(() => {})
   })
   
   mb.on('hide', () => {
@@ -122,6 +120,10 @@ function stopBackgroundRefresh() {
 
 ipcMain.handle('get-usage-data', async () => {
   return fetchAndEmitUsageData()
+})
+
+ipcMain.handle('quit-app', () => {
+  app.quit()
 })
 
 app.on('window-all-closed', () => {

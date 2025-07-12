@@ -126,4 +126,23 @@ describe('Main Process', () => {
       daily: []
     })
   })
+
+  it('should handle quit-app IPC call', async () => {
+    const mockHandle = vi.mocked(ipcMain.handle)
+    const mockQuit = vi.mocked(app.quit)
+
+    const readyPromise = Promise.resolve()
+    vi.mocked(app.whenReady).mockReturnValue(readyPromise)
+
+    await import('./index')
+
+    const handler = mockHandle.mock.calls.find(
+      call => call[0] === 'quit-app'
+    )?.[1] as Function
+
+    expect(handler).toBeDefined()
+
+    handler()
+    expect(mockQuit).toHaveBeenCalled()
+  })
 })

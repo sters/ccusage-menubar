@@ -38,7 +38,8 @@ describe('App', () => {
 
     window.electronAPI = {
       getUsageData: mockGetUsageData,
-      onUsageUpdate: mockOnUsageUpdate
+      onUsageUpdate: mockOnUsageUpdate,
+      quit: vi.fn()
     }
   })
 
@@ -97,22 +98,21 @@ describe('App', () => {
     expect(mockGetUsageData).toHaveBeenCalledTimes(1)
   })
 
-  it('should handle settings button click', async () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+  it('should handle quit button click', async () => {
+    const mockQuit = vi.mocked(window.electronAPI.quit)
     
     new App(container)
     
     await vi.waitFor(() => {
-      expect(container.innerHTML).toContain('Settings')
+      expect(container.innerHTML).toContain('Quit')
     })
 
-    const settingsBtn = container.querySelector('#settings-btn') as HTMLButtonElement
-    expect(settingsBtn).toBeTruthy()
+    const quitBtn = container.querySelector('#quit-btn') as HTMLButtonElement
+    expect(quitBtn).toBeTruthy()
 
-    await settingsBtn.click()
+    await quitBtn.click()
 
-    expect(consoleSpy).toHaveBeenCalledWith('Settings clicked')
-    consoleSpy.mockRestore()
+    expect(mockQuit).toHaveBeenCalledTimes(1)
   })
 
   it('should update display when usage data changes', async () => {

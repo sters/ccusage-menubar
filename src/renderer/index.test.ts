@@ -13,7 +13,8 @@ describe('Renderer index', () => {
 
     window.electronAPI = {
       getUsageData: vi.fn(),
-      onUsageUpdate: vi.fn()
+      onUsageUpdate: vi.fn(),
+      quit: vi.fn()
     }
   })
 
