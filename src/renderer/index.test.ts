@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 describe('Renderer index', () => {
-  let mockApp: any
+  let mockApp: ReturnType<typeof vi.fn>
   
   beforeEach(() => {
     document.body.innerHTML = '<div id="app"></div>'

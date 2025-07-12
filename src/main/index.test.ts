@@ -19,8 +19,34 @@ vi.mock('menubar', () => ({
   }))
 }))
 
-vi.mock('fs', () => ({
+vi.mock('node:fs', () => ({
+  default: {
+    existsSync: vi.fn(() => true)
+  },
   existsSync: vi.fn(() => true)
+}))
+
+vi.mock('node:url', () => ({
+  fileURLToPath: vi.fn((url) => url.replace('file://', '')),
+  default: {
+    fileURLToPath: vi.fn((url) => url.replace('file://', ''))
+  }
+}))
+
+vi.mock('./services/usageService.js', () => ({
+  usageService: {
+    fetchUsageData: vi.fn().mockResolvedValue({
+      today: {
+        inputTokens: 1234,
+        outputTokens: 5678,
+        cacheCreationTokens: 100,
+        cacheReadTokens: 200,
+        totalCost: 1.23,
+        modelsUsed: ['claude-3-opus']
+      },
+      daily: []
+    })
+  }
 }))
 
 describe('Main Process', () => {
@@ -92,10 +118,12 @@ describe('Main Process', () => {
       tokens: {
         input: 1234,
         output: 5678,
-        total: 6912
+        cacheCreation: 100,
+        cacheRead: 200
       },
-      requests: 42,
-      estimatedCost: 1.23
+      estimatedCost: 1.23,
+      modelsUsed: ['claude-3-opus'],
+      daily: []
     })
   })
 })

@@ -1,4 +1,15 @@
-import { loadDailyUsageData, type DailyUsage } from 'ccusage/data-loader';
+import { loadDailyUsageData } from 'ccusage/data-loader';
+
+interface ExtendedDailyUsage {
+  date: string;
+  inputTokens: number;
+  outputTokens: number;
+  modelsUsed: string[];
+  cacheCreationTokens?: number;
+  cacheReadTokens?: number;
+  totalCost?: number;
+  cost?: number;
+}
 
 export interface UsageData {
   today: {
@@ -42,11 +53,11 @@ export class UsageService {
       console.log('Fetching usage data from', since, 'to', until);
 
       // Use loadDailyUsageData directly from ccusage
-      const dailyData: DailyUsage[] = await loadDailyUsageData({
+      const dailyData = await loadDailyUsageData({
         since,
         until,
         order: 'asc'
-      });
+      }) as ExtendedDailyUsage[];
 
       console.log('Daily usage data:', dailyData);
 
@@ -61,18 +72,18 @@ export class UsageService {
         today: {
           inputTokens: todayData?.inputTokens || 0,
           outputTokens: todayData?.outputTokens || 0,
-          cacheCreationTokens: (todayData as any)?.cacheCreationTokens || 0,
-          cacheReadTokens: (todayData as any)?.cacheReadTokens || 0,
-          totalCost: (todayData as any)?.totalCost || (todayData as any)?.cost || 0,
+          cacheCreationTokens: todayData?.cacheCreationTokens || 0,
+          cacheReadTokens: todayData?.cacheReadTokens || 0,
+          totalCost: todayData?.totalCost || todayData?.cost || 0,
           modelsUsed: todayData?.modelsUsed || [],
         },
         daily: dailyData.map((d) => ({
           date: d.date,
           inputTokens: d.inputTokens,
           outputTokens: d.outputTokens,
-          cacheCreationTokens: (d as any).cacheCreationTokens || 0,
-          cacheReadTokens: (d as any).cacheReadTokens || 0,
-          totalCost: (d as any).totalCost || (d as any).cost || 0,
+          cacheCreationTokens: d.cacheCreationTokens || 0,
+          cacheReadTokens: d.cacheReadTokens || 0,
+          totalCost: d.totalCost || d.cost || 0,
           modelsUsed: d.modelsUsed || [],
         })),
       };

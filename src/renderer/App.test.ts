@@ -10,10 +10,22 @@ describe('App', () => {
     tokens: {
       input: 1000,
       output: 2000,
-      total: 3000
+      cacheCreation: 100,
+      cacheRead: 200
     },
-    requests: 10,
-    estimatedCost: 5.50
+    estimatedCost: 5.50,
+    modelsUsed: ['claude-3-opus', 'claude-3-sonnet'],
+    daily: [
+      {
+        date: '2024-01-01',
+        inputTokens: 500,
+        outputTokens: 1000,
+        cacheCreationTokens: 50,
+        cacheReadTokens: 100,
+        totalCost: 2.75,
+        modelsUsed: ['claude-3-opus']
+      }
+    ]
   }
 
   beforeEach(() => {
@@ -47,9 +59,11 @@ describe('App', () => {
       expect(container.innerHTML).toContain('Claude Code Usage')
       expect(container.innerHTML).toContain('1,000')
       expect(container.innerHTML).toContain('2,000')
-      expect(container.innerHTML).toContain('3,000')
-      expect(container.innerHTML).toContain('10')
+      expect(container.innerHTML).toContain('100')
+      expect(container.innerHTML).toContain('200')
       expect(container.innerHTML).toContain('$5.50')
+      expect(container.innerHTML).toContain('claude-3-opus')
+      expect(container.innerHTML).toContain('claude-3-sonnet')
     })
   })
 
@@ -113,18 +127,20 @@ describe('App', () => {
       tokens: {
         input: 2000,
         output: 3000,
-        total: 5000
+        cacheCreation: 150,
+        cacheRead: 250
       },
-      requests: 20,
-      estimatedCost: 10.00
+      estimatedCost: 10.00,
+      modelsUsed: ['claude-3-opus'],
+      daily: []
     }
 
     updateCallback(newData)
 
     expect(container.innerHTML).toContain('2,000')
     expect(container.innerHTML).toContain('3,000')
-    expect(container.innerHTML).toContain('5,000')
-    expect(container.innerHTML).toContain('20')
+    expect(container.innerHTML).toContain('150')
+    expect(container.innerHTML).toContain('250')
     expect(container.innerHTML).toContain('$10.00')
   })
 
