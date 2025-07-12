@@ -3,14 +3,35 @@
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { existsSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const electron = join(__dirname, '..', 'node_modules', '.bin', 'electron');
+// Try multiple possible electron binary locations
+const possibleElectronPaths = [
+  join(__dirname, '..', 'node_modules', '.bin', 'electron'),
+  join(__dirname, '..', 'node_modules', 'electron', 'cli.js'),
+  'electron' // fallback to global electron
+];
+
+let electronPath = null;
+for (const path of possibleElectronPaths) {
+  if (path === 'electron' || existsSync(path)) {
+    electronPath = path;
+    break;
+  }
+}
+
+if (!electronPath) {
+  console.error('Error: Could not find electron binary');
+  console.error('Please ensure electron is installed as a dependency');
+  process.exit(1);
+}
+
 const main = join(__dirname, '..');
 
-const child = spawn(electron, [main], {
+const child = spawn(electronPath, [main], {
   stdio: 'inherit',
   env: { ...process.env }
 });
