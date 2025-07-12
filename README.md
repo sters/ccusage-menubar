@@ -15,8 +15,7 @@ npx github:sters/ccusage-menubar
 
 ### Using bun/bunx
 ```bash
-# Use the dist branch which includes built files
-bunx github:sters/ccusage-menubar#dist
+bunx github:sters/ccusage-menubar
 ```
 
 ### Local installation

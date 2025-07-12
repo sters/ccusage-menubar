@@ -33,7 +33,7 @@ jobs:
     - name: Build check
       run: npm run build
 
-    - name: Create dist branch
+    - name: Push dist files
       uses: planetscale/ghcommit-action@v0.2.15
       with:
         commit_message: "Add dist files for compatibility"
