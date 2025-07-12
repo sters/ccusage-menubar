@@ -2,7 +2,9 @@
 
 ![Coverage](docs/coverage.svg)
 
-A menubar app for monitoring Claude Code usage.
+A menubar app for monitoring Claude Code usage using [ccusage](https://github.com/ryoppippi/ccusage) and [menubar](https://github.com/max-mapper/menubar).
+
+![capture](docs/image.png)
 
 ## Installation
 
