@@ -2,7 +2,7 @@ coverage:
   badge:
     path: docs/coverage.svg
   paths:
-    - coverage/coverage-summary.json
+    - coverage/lcov.info
 push:
   if: is_default_branch
 comment:
