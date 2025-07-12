@@ -50,7 +50,6 @@ export class UsageService {
       const since = weekAgo.toISOString().split('T')[0].replace(/-/g, '');
       const until = tomorrow.toISOString().split('T')[0].replace(/-/g, '');
 
-      console.log('Fetching usage data from', since, 'to', until);
 
       // Use loadDailyUsageData directly from ccusage
       const dailyData = await loadDailyUsageData({
@@ -59,13 +58,11 @@ export class UsageService {
         order: 'asc'
       }) as ExtendedDailyUsage[];
 
-      console.log('Daily usage data:', dailyData);
 
       // Find today's data (date format is YYYY-MM-DD)
       const todayStr = today.toISOString().split('T')[0];
       const todayData = dailyData.find((d) => d.date === todayStr);
       
-      console.log('[ELECTRON] Today data:', todayData);
 
       // Format the data
       const usageData: UsageData = {
@@ -90,7 +87,7 @@ export class UsageService {
 
       return usageData;
     } catch (error) {
-      console.error('Error fetching usage data:', error);
+      // Error fetching usage data
       // Return empty data on error
       return {
         today: {

@@ -43,7 +43,7 @@ class App {
       this.usage = await window.electronAPI.getUsageData()
       this.render()
     } catch (error) {
-      console.error('Failed to fetch usage data:', error)
+      // Failed to fetch usage data
       this.renderError()
     }
 
@@ -135,12 +135,12 @@ class App {
         this.usage = await window.electronAPI.getUsageData()
         this.render()
       } catch (error) {
-        console.error('Failed to refresh data:', error)
+        // Failed to refresh data
       }
     })
 
     settingsBtn?.addEventListener('click', () => {
-      console.log('Settings clicked')
+      // Settings clicked
       // TODO: Implement settings window
     })
   }

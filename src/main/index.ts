@@ -9,6 +9,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 let mb: ReturnType<typeof menubar>
+let backgroundRefreshInterval: NodeJS.Timeout | null = null
+const REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes
 
 app.whenReady().then(() => {
   // Get the correct path to the icon based on environment
@@ -18,8 +20,6 @@ app.whenReady().then(() => {
   const iconName = 'icon.png'
   const iconPath = path.join(assetsPath, iconName)
   
-  console.log('Icon path:', iconPath)
-  console.log('Icon exists:', fs.existsSync(iconPath))
   
   mb = menubar({
     icon: iconPath,
@@ -49,16 +49,17 @@ app.whenReady().then(() => {
   })
 
   mb.on('ready', () => {
-    console.log('Menubar app is ready')
-    console.log('Tray bounds:', mb.tray.getBounds())
+    // Start background refresh when app is ready
+    startBackgroundRefresh()
   })
   
   mb.on('show', () => {
-    console.log('Menubar window shown')
+    // Refresh data when window is shown
+    fetchAndEmitUsageData().catch(() => {})
   })
   
   mb.on('hide', () => {
-    console.log('Menubar window hidden')
+    // Window hidden
   })
 
   mb.on('after-create-window', () => {
@@ -73,25 +74,69 @@ app.whenReady().then(() => {
   })
 })
 
-ipcMain.handle('get-usage-data', async () => {
-  const usageData = await usageService.fetchUsageData()
-  
-  // Transform the data to match the expected format
-  return {
-    tokens: {
-      input: usageData.today.inputTokens,
-      output: usageData.today.outputTokens,
-      cacheCreation: usageData.today.cacheCreationTokens || 0,
-      cacheRead: usageData.today.cacheReadTokens || 0
-    },
-    estimatedCost: usageData.today.totalCost,
-    modelsUsed: usageData.today.modelsUsed,
-    daily: usageData.daily
+// Function to fetch and emit usage data updates
+async function fetchAndEmitUsageData() {
+  try {
+    const usageData = await usageService.fetchUsageData()
+    
+    const formattedData = {
+      tokens: {
+        input: usageData.today.inputTokens,
+        output: usageData.today.outputTokens,
+        cacheCreation: usageData.today.cacheCreationTokens || 0,
+        cacheRead: usageData.today.cacheReadTokens || 0
+      },
+      estimatedCost: usageData.today.totalCost,
+      modelsUsed: usageData.today.modelsUsed,
+      daily: usageData.daily
+    }
+    
+    // Emit the update to the renderer if window exists
+    if (mb.window) {
+      mb.window.webContents.send('usage-update', formattedData)
+    }
+    
+    return formattedData
+  } catch (error) {
+    // Error fetching usage data
+    throw error
   }
+}
+
+// Start background refresh when app is ready
+function startBackgroundRefresh() {
+  // Initial fetch
+  fetchAndEmitUsageData().catch(() => {})
+  
+  // Clear any existing interval
+  if (backgroundRefreshInterval) {
+    clearInterval(backgroundRefreshInterval)
+  }
+  
+  // Set up periodic refresh
+  backgroundRefreshInterval = setInterval(() => {
+    fetchAndEmitUsageData().catch(() => {})
+  }, REFRESH_INTERVAL)
+}
+
+// Stop background refresh
+function stopBackgroundRefresh() {
+  if (backgroundRefreshInterval) {
+    clearInterval(backgroundRefreshInterval)
+    backgroundRefreshInterval = null
+  }
+}
+
+ipcMain.handle('get-usage-data', async () => {
+  return fetchAndEmitUsageData()
 })
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+app.on('before-quit', () => {
+  stopBackgroundRefresh()
 })
