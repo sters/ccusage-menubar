@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/main/index.js",
-  "bin": {
-    "ccusage-menubar": "./bin/ccusage-menubar"
-  },
+  "bin": "./bin/ccusage-menubar",
   "scripts": {
     "dev": "NODE_ENV=development concurrently -n \"VITE,ELECTRON\" -c \"yellow,cyan\" \"npm run dev:renderer\" \"npm run dev:electron\"",
     "dev:renderer": "vite",
