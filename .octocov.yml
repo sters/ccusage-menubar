@@ -1,0 +1,17 @@
+coverage:
+  badge:
+    path: docs/coverage.svg
+  paths:
+    - coverage/coverage-summary.json
+push:
+  if: is_default_branch
+comment:
+  if: is_pull_request
+# report:
+#   if: is_pull_request
+# datastore:
+#   artifact:
+#     reports:
+#       if: is_pull_request
+#     diffs:
+#       if: is_pull_request
